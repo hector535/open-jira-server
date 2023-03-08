@@ -18,6 +18,7 @@ export const verifyJWT = (token) => {
         jwt.verify(token, config.secretKey, (err, payload) => {
             if (err) {
                 console.error(err);
+                console.log({ ...err });
                 reject(err);
             }
             else {

@@ -1,53 +1,58 @@
 import { RequestHandler } from "express";
 import bcrypt from "bcryptjs";
 
-import { tryCatch } from "../errors/tryCatch.js";
+import { tryCatch, BadInputError } from "../errors/index.js";
 import { AuthRequest, User } from "../types/index.js";
-import { generateJWT } from "../utils/token.js";
-import * as authService from "../services/auth.js";
-import { BadUserInputError } from "../errors/customErrors.js";
+import { generateJWT, setCookie } from "../utils/index.js";
+import { authServices } from "../services/index.js";
+import {
+  AUTH_COOKIE_NAME,
+  EMAIL_PASSWORD_INVALID_MESSAGE,
+  EMAIL_EXISTS_MESSAGE,
+} from "../constants/index.js";
 
 export const createUser = tryCatch(async (req, res) => {
   const { email, password } = req.body;
 
+  const user = await authServices.getUserByEmail(email);
+
+  if (user) {
+    throw new BadInputError(EMAIL_EXISTS_MESSAGE);
+  }
+
   const salt = await bcrypt.genSalt();
   const hashedPwd = await bcrypt.hash(password, salt);
 
-  const generatedUserId = await authService.createUser({
+  const generatedUserId = await authServices.createUser({
     email,
     password: hashedPwd,
   } as User);
 
   const token = await generateJWT({ userId: generatedUserId });
 
-  res.cookie("accessToken", token, { httpOnly: true }).json({ email });
+  res.cookie(...setCookie(AUTH_COOKIE_NAME, token)).json({ email });
 });
 
 export const login = tryCatch(async (req: AuthRequest, res) => {
   const { email, password } = req.body;
 
-  const user = await authService.getUserByEmail(email);
+  const user = await authServices.getUserByEmail(email);
 
   if (!user) {
-    throw new BadUserInputError("email/password invalid");
+    throw new BadInputError(EMAIL_PASSWORD_INVALID_MESSAGE);
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    throw new BadUserInputError("email/password invalid");
+    throw new BadInputError(EMAIL_PASSWORD_INVALID_MESSAGE);
   }
 
   const token = await generateJWT({ userId: user.user_id });
 
-  res.cookie("accessToken", token, { httpOnly: true }).json({ email });
+  res.cookie(...setCookie(AUTH_COOKIE_NAME, token)).json({ email });
 });
 
 export const logout: RequestHandler = (req, res) => {
-  res
-    .clearCookie("accessToken", {
-      secure: true,
-      sameSite: "none",
-    })
-    .json();
+  res.clearCookie(AUTH_COOKIE_NAME).json();
 };

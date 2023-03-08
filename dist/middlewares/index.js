@@ -1,2 +1,3 @@
 export * from "./error-handler.js";
-export * from "./validateFields";
+export * from "./validateFields.js";
+export * from "./validateJWT.js";

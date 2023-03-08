@@ -1,12 +1,12 @@
-import { tryCatch } from "../errors/tryCatch.js";
-import * as TaskService from "../services/tasks.js";
+import { tryCatch } from "../errors/index.js";
+import { taskServices } from "../services/index.js";
 export const getTasks = tryCatch(async (req, res) => {
-    const data = await TaskService.getTasks({ userId: req.userId });
+    const data = await taskServices.getTasks({ userId: req.userId });
     res.json(data);
 });
 export const addTask = tryCatch(async (req, res) => {
     const { description } = req.body;
-    const data = await TaskService.addTask({
+    const data = await taskServices.addTask({
         description,
         user_id: req.userId,
     });
@@ -15,7 +15,7 @@ export const addTask = tryCatch(async (req, res) => {
 export const updateTaskById = tryCatch(async (req, res) => {
     const { description, status_id } = req.body;
     const { id } = req.params;
-    const data = await TaskService.updateTaskById({
+    const data = await taskServices.updateTaskById({
         task_id: +id,
         user_id: req.userId,
         description,
@@ -26,7 +26,7 @@ export const updateTaskById = tryCatch(async (req, res) => {
 export const getTaskById = tryCatch(async (req, res) => {
     const { id } = req.params;
     const { userId } = req;
-    const data = await TaskService.getTaskById({
+    const data = await taskServices.getTaskById({
         userId: userId,
         taskId: +id,
     });
@@ -35,7 +35,7 @@ export const getTaskById = tryCatch(async (req, res) => {
 export const deleteTaskById = tryCatch(async (req, res) => {
     const { id } = req.params;
     const { userId } = req;
-    const data = await TaskService.deleteTaskById({
+    const data = await taskServices.deleteTaskById({
         userId: userId,
         taskId: +id,
     });

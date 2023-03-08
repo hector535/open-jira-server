@@ -1,8 +1,8 @@
 import { execute } from "../db/index.js";
-import { createUpdateByIdQuery, createInsertQuery } from "../utils/query.js";
-import * as TaskQueries from "../queries/tasks.js";
+import { createUpdateByIdQuery, createInsertQuery } from "../utils/index.js";
+import { taskQueries } from "../queries/index.js";
 export const getTasks = async ({ userId }) => {
-    const { rows } = await execute(TaskQueries.getTasks, [userId]);
+    const { rows } = await execute(taskQueries.getTasks, [userId]);
     return rows;
 };
 export const addTask = async (task) => {
@@ -15,14 +15,14 @@ export const addTask = async (task) => {
     return rows[0].id;
 };
 export const getTaskById = async ({ userId, taskId }) => {
-    const { rows } = await execute(TaskQueries.getTaskById, [
+    const { rows } = await execute(taskQueries.getTaskById, [
         userId,
         taskId,
     ]);
     return rows.length ? rows[0] : null;
 };
 export const deleteTaskById = async ({ userId, taskId }) => {
-    const { rowCount } = await execute(TaskQueries.deleteTaskById, [
+    const { rowCount } = await execute(taskQueries.deleteTaskById, [
         taskId,
         userId,
     ]);

@@ -1,5 +1,5 @@
 import { RequestHandler } from "express";
-import { InvalidTokenError } from "../errors/customErrors.js";
+import { MissingTokenError } from "../errors/customErrors.js";
 import { AuthRequest } from "../types/index.js";
 import { verifyJWT } from "../utils/token.js";
 
@@ -12,7 +12,7 @@ export const validateJWT: RequestHandler = async (
     const { accessToken } = req.cookies;
 
     if (!accessToken) {
-      throw new InvalidTokenError();
+      throw new MissingTokenError();
     }
 
     const { userId } = (await verifyJWT(accessToken)) as { userId: number };

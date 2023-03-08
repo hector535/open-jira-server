@@ -1,17 +1,15 @@
 import { execute } from "../db/index.js";
 import { Task } from "../types/index.js";
-import { createUpdateByIdQuery, createInsertQuery } from "../utils/query.js";
-import * as TaskQueries from "../queries/tasks.js";
+import { createUpdateByIdQuery, createInsertQuery } from "../utils/index.js";
+import { taskQueries } from "../queries/index.js";
 
 type UserAndTaskID = {
   userId: number;
   taskId: number;
 };
 
-type UserAndTask = {};
-
 export const getTasks = async ({ userId }: { userId: number }) => {
-  const { rows } = await execute<Task>(TaskQueries.getTasks, [userId]);
+  const { rows } = await execute<Task>(taskQueries.getTasks, [userId]);
   return rows;
 };
 
@@ -27,7 +25,7 @@ export const addTask = async (task: Task) => {
 };
 
 export const getTaskById = async ({ userId, taskId }: UserAndTaskID) => {
-  const { rows } = await execute<Task>(TaskQueries.getTaskById, [
+  const { rows } = await execute<Task>(taskQueries.getTaskById, [
     userId,
     taskId,
   ]);
@@ -35,7 +33,7 @@ export const getTaskById = async ({ userId, taskId }: UserAndTaskID) => {
 };
 
 export const deleteTaskById = async ({ userId, taskId }: UserAndTaskID) => {
-  const { rowCount } = await execute<Task>(TaskQueries.deleteTaskById, [
+  const { rowCount } = await execute<Task>(taskQueries.deleteTaskById, [
     taskId,
     userId,
   ]);

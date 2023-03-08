@@ -1,18 +1,19 @@
 export class CustomError extends Error {
-    constructor(message, status = 500, error = null) {
+    constructor(message, name, status = 500, details = null) {
         super();
         this.message = message;
+        this.name = name;
         this.status = status;
-        this.error = error;
+        this.details = details;
     }
 }
-export class BadUserInputError extends CustomError {
+export class BadInputError extends CustomError {
     constructor(error) {
-        super("There were validation errors.", 400, error);
+        super("There were validation errors.", "BadInputError", 400, error);
     }
 }
-export class InvalidTokenError extends CustomError {
-    constructor(message = "Authentication token is invalid") {
-        super(message);
+export class MissingTokenError extends CustomError {
+    constructor(message = "The access token is missing") {
+        super(message, "MissingTokenError");
     }
 }

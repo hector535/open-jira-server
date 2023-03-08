@@ -1,9 +1,9 @@
 import { execute } from "../db/index.js";
 import { User } from "../types/index.js";
-import * as queries from "../queries/auth.js";
+import { authQueries } from "../queries/index.js";
 
 export const createUser = async (user: User) => {
-  const { rows } = await execute<{ user_id: number }>(queries.createUser, [
+  const { rows } = await execute<{ user_id: number }>(authQueries.createUser, [
     user.email,
     user.password,
   ]);
@@ -11,6 +11,6 @@ export const createUser = async (user: User) => {
 };
 
 export const getUserByEmail = async (email: string) => {
-  const { rows } = await execute<User>(queries.getUserByEmail, [email]);
+  const { rows } = await execute<User>(authQueries.getUserByEmail, [email]);
   return rows[0];
 };

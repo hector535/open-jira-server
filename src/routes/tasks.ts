@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { body } from "express-validator";
-import { validateFields } from "../middlewares/validateFields.js";
+import { validateFields } from "../middlewares/index.js";
+import { descriptionValidator, isValidStatusId } from "../validators/index.js";
 import {
   getTaskById,
   getTasks,
   addTask,
   updateTaskById,
   deleteTaskById,
-} from "../controllers/tasks.js";
-import { descriptionValidator, isValidStatusId } from "../validators/index.js";
+} from "../controllers/index.js";
 
 const router = Router();
 
